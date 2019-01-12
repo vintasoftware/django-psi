@@ -4,6 +4,8 @@ import logging
 from django.core.management.base import BaseCommand
 from django.conf import settings
 from django.core.urlresolvers import RegexURLResolver, RegexURLPattern
+from django.core.validators import URLValidator
+from django.core.exceptions import ValidationError
 from django.urls import reverse
 from apiclient.discovery import build
 from django.conf import settings
@@ -72,6 +74,13 @@ class Command(BaseCommand):
 
     def _run_pagespeed(self, path):
         url_to_check = self._analysis_base_url + path
+
+        try:
+            URLValidator(url_to_check)
+        except ValidationError:
+            logger.error('Invalid url: {url}.'.format(url=url_to_check))
+            raise ValidationError
+
         logger.info('Analyzing url in pagespeed: {url}'.format(url=url_to_check))
 
         analysis_result = False
@@ -104,9 +113,11 @@ class Command(BaseCommand):
         for report in report_list:
             print("Name: {0}".format(report['url']['name']))
             print("----- path: {0}".format(report['url']['path']))
-            print("----- status: {0}".format(report['report']['status']))
-            print("----- category: {0}".format(report['report']['category']))
-            print("----- score: {0}\n".format(report['report']['score']))
+            if report['report']:
+                print("----- category: {0}".format(report['report']['category']))
+                print("----- score: {0}\n".format(report['report']['score']))
+            else:
+                print("----- report failed")
             
         print("--------------------------------------------")
         print("\n")
