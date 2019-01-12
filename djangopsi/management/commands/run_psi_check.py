@@ -6,14 +6,15 @@ from django.conf import settings
 from django.core.urlresolvers import RegexURLResolver, RegexURLPattern
 from django.urls import reverse
 from apiclient.discovery import build
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
 root_urlconf = __import__(settings.ROOT_URLCONF)  # import root_urlconf module
 all_urlpatterns = root_urlconf.urls.urlpatterns  # project's urlpatterns
 
-PAGESPEED_URL = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed'
-PRODUCTION_URL = 'https://splendidspoon.com'
+PSI_GOOGLE_API_DEV_KEY = settings.PSI_GOOGLE_API_DEV_KEY
+
 
 class Command(BaseCommand):
     help = 'Creates PageSpeed Insights reports for your django project'
@@ -23,7 +24,7 @@ class Command(BaseCommand):
             '--env',
             action='store',
             dest='env',
-            default='staging',
+            default='production',
             help='The environment where tests are going to be run',
         )
         
@@ -54,35 +55,43 @@ class Command(BaseCommand):
         return url_list
 
     def _treat_pagespeed_response(self, response):
+        report = False
 
-        status_code = response.status_code
-        status = requests.status_codes._codes[status_code][0]
+        id = response['id']
+        category = response['loadingExperience'].get('overall_category', '-')
+        score = response['lighthouseResult']['categories']['performance']['score'] * 100
 
-        data = response.json()
-        id = data['id']
-        category = data['loadingExperience']['overall_category']
-        score = data['lighthouseResult']['categories']['performance']['score'] * 100
-
-        return {
+        report = {
             'id': id,
-            'status': status,
             'category': category,
             'score': score,
-            'raw_data': data
+            'raw_data': response
         }
 
-    def _run_pagespeed(self, url):
-        logger.info('Checking url in pagespeed: {url}'.format(url=(PRODUCTION_URL + url)))
-        r = requests.get(PAGESPEED_URL + '?url=' + PRODUCTION_URL + url)
-        logger.info('Checking url done, status: {status_code}'.format(status_code=(r.status_code)))
+        return report
+
+    def _run_pagespeed(self, path):
+        url_to_check = self._analysis_base_url + path
+        logger.info('Analyzing url in pagespeed: {url}'.format(url=url_to_check))
+
+        analysis_result = False
+        try:
+            r = self.service.pagespeedapi().runpagespeed(url=url_to_check, strategy='desktop').execute()
+        except:
+            logger.error('There was an error analyzing this url.')
+
+        if r:
+            logger.info('Done. Analysis made successfuly.')
+            analysis_result = self._treat_pagespeed_response(r)
         
-        return self._treat_pagespeed_response(r)
+        return analysis_result
         
     def _check_urls_pagespeed(self, urls):
         url_reports = []
         for url in urls:
             report = self._run_pagespeed(url['path'])
-            url_reports.append({'url': url, 'report': report})
+            if report:
+                url_reports.append({'url': url, 'report': report})
 
         return url_reports
 
@@ -90,7 +99,7 @@ class Command(BaseCommand):
         print("\n" + "PageSpeed Insights")
         print("--------------------------------------------\n")
 
-        print("Statistics for {0}\n".format(PRODUCTION_URL))
+        print("Statistics for {0}\n".format(self._analysis_base_url))
 
         for report in report_list:
             print("Name: {0}".format(report['url']['name']))
@@ -103,10 +112,30 @@ class Command(BaseCommand):
         print("\n")
 
 
+    def _safety_check(self):
+
+        # Check if there are production env settings
+        if not settings.PSI_ENVS['production']['base_url']:
+            logger.error('FAIL AND EXIT')
+
+
     def handle(self, *args, **options):
+        # XXX TODO safety checks
+        # self._safety_check()
+
         self.stdout.write(self.style.SUCCESS('Pagespeed report started'))
+
+        if options['env']:
+            self._analysis_base_url = settings.PSI_ENVS[options['env']]['base_url']
+        else:
+            self._analysis_base_url = settings.PSI_ENVS['production']['base_url']
+        
+        # Disable file cache based in
+        # https://github.com/googleapis/google-api-python-client/issues/299
+        self.service = build(serviceName='pagespeedonline', version='v5', developerKey=PSI_GOOGLE_API_DEV_KEY, cache_discovery=False)
+        
         urls_to_check = self._get_all_urls_to_check(all_urlpatterns)
-        # service = build(serviceName='pagespeedonline', version='v5', developerKey=key)
+        
         url_reports = self._check_urls_pagespeed(urls_to_check)
 
         if options['console']:

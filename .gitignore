@@ -1,0 +1,63 @@
+# *.pyc
+db.sqlite3
+.DS_Store
+.env
+.envs-to-deploy.json
+/env/
+/venv/
+*/settings/local.py
+/staticfiles/*
+/mediafiles/*
+/htmlcov/
+
+# Sublime
+tox.ini
+
+# pycharm
+.idea
+
+# data
+*.dump
+
+# npm
+node_modules/
+npm-debug.log
+
+# Folders
+.DS_Store
+
+# Celery
+celerybeat-schedule
+
+# Redis
+dump.rdb
+
+# Webpack
+/assets/bundles/*
+webpack-stats.json
+jquery-webpack-stats.json
+
+# Sass
+.sass-cache
+*.map
+
+# General
+/env/
+/output/
+/cache/
+
+# Spritesmith
+spritesmith-generated/
+spritesmith.scss
+
+# Coverage
+.coverage
+
+# Naomi
+/tmp_email/
+
+# Personal
+/_personal/
+
+# Visual Studio Code config
+.vscode
