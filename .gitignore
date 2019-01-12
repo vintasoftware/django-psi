@@ -1,4 +1,4 @@
-#*.pyc
+*.pyc
 db.sqlite3
 .DS_Store
 .env
@@ -11,7 +11,7 @@ db.sqlite3
 /htmlcov/
 
 # Sublime
-#tox.ini
+tox.ini
 
 # pycharm
 .idea
