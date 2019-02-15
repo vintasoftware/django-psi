@@ -3,7 +3,7 @@
 ### Settings
 
 Add the env settings to your settings.py
-```
+```json
 PSI_ENVS = {
     'production': {
         'base_url': 'https://splendidspoon.com',
