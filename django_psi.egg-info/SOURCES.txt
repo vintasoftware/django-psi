@@ -1,0 +1,14 @@
+MANIFEST.in
+README.md
+setup.py
+django_psi.egg-info/PKG-INFO
+django_psi.egg-info/SOURCES.txt
+django_psi.egg-info/dependency_links.txt
+django_psi.egg-info/requires.txt
+django_psi.egg-info/top_level.txt
+djangopsi/__init__.py
+djangopsi/admin.py
+djangopsi/decorators.py
+djangopsi/models.py
+djangopsi/services.py
+djangopsi/tests.py

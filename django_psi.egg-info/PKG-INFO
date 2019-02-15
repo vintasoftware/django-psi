@@ -1,0 +1,28 @@
+Metadata-Version: 1.0
+Name: django-psi
+Version: 0.0.1
+Summary: TODO description
+Home-page: https://github.com/tcostam/django-psi/
+Author: Tiago da Costa Melo
+Author-email: tiagodacostamelo@gmail.com
+License: MIT
+Description: Django PSI
+        
+        1. Decorate your class-based views with `@is_psi_checked`
+        
+        2. Run command run_psi_check
+        `python manage.py run_psi_check`
+        
+        Options:
+        
+        ```
+        -v -vv -vvv
+            Verbose mode.
+        
+        -c --console
+            Outputs the report in the console
+        
+        --env=ENV
+            Default value is staging.
+        ```
+Platform: UNKNOWN
