@@ -2,7 +2,8 @@ import logging
 
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import RegexURLResolver, RegexURLPattern
+# from django.core.urlresolvers import RegexURLResolver, RegexURLPattern
+from django.urls import URLPattern, URLResolver
 from django.urls import reverse
 from django.conf import settings
 
@@ -32,10 +33,10 @@ def get_all_project_urls_to_check(urlpatterns=None, url_list=[]):
         urlpatterns = root_urlconf.urls.urlpatterns  # project's urlpatterns
 
     for pattern in urlpatterns:
-        if isinstance(pattern, RegexURLResolver):
+        if isinstance(pattern, URLResolver):
             # call this function recursively
             get_all_project_urls_to_check(pattern.url_patterns, url_list)
-        elif isinstance(pattern, RegexURLPattern):
+        elif isinstance(pattern, URLPattern):
             callback_func = pattern.callback
             if hasattr(callback_func, 'view_class') and \
                     hasattr(callback_func.view_class, 'is_psi_checked') and \

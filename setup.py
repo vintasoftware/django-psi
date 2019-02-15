@@ -15,7 +15,7 @@ setup(
     url='https://github.com/tcostam/django-psi/',
     license='MIT',
     install_requires=[
-        'Django>=1.11',
+        'Django>=2.0',
         'google-api-python-client',
     ]
 )
