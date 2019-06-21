@@ -6,6 +6,7 @@ from django.conf import settings
 from apiclient.discovery import build
 from django.conf import settings
 
+from djangopsi.models import Environment
 from djangopsi.services import get_all_project_urls_to_check, check_urls_in_pagespeed
 
 
@@ -41,6 +42,14 @@ class Command(BaseCommand):
             action='store_true',
             dest='console',
             help='Output the results to the console',
+        )
+
+        parser.add_argument(
+            '-k',
+            '--keep',
+            action='store_true',
+            dest='keep',
+            help='Saves the report to the database',
         )
 
         # parser.add_argument(
@@ -84,10 +93,11 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS('Pagespeed report started'))
 
+        environment = 'production'
         if options['env']:
-            analysis_base_url = settings.PSI_ENVS[options['env']]['base_url']
-        else:
-            analysis_base_url = settings.PSI_ENVS['production']['base_url']
+            environment = options['env']
+
+        analysis_base_url = settings.PSI_ENVS[environment]['base_url']
         
         # Disable file cache based in
         # https://github.com/googleapis/google-api-python-client/issues/299
@@ -99,6 +109,18 @@ class Command(BaseCommand):
             url_reports = check_urls_in_pagespeed(psi_service, urls_to_check, analysis_base_url, options['strategy'])
         else:
             url_reports = check_urls_in_pagespeed(psi_service, urls_to_check, analysis_base_url)
+
+        if options['keep']:
+            env, _ = Environment.objects.get_or_create(name=environment, base_url=analysis_base_url)
+            for report in url_reports:
+                url, _ = env.urls.get_or_create(name=report['url']['name'], path=report['url']['path'])
+                url.reports.create(
+                    psi_id=report['psi_report']['psi_id'],
+                    strategy=report['psi_report']['strategy'],
+                    category=report['psi_report']['category'],
+                    score=report['psi_report']['score'],
+                    raw_data=report['psi_report']['raw_data']
+                )
 
         if options['console']:
             self._console_report(report_list=url_reports, base_url=analysis_base_url, strategy=options['strategy'])

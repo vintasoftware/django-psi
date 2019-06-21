@@ -11,7 +11,7 @@ from django.conf import settings
 progressbar.streams.wrap_stderr()
 logger = logging.getLogger(__name__)
 
-def treat_pagespeed_response(response):
+def treat_pagespeed_response(response, strategy):
     report = False
 
     id = response['id']
@@ -21,6 +21,7 @@ def treat_pagespeed_response(response):
     report = {
         'psi_id': id,
         'category': category,
+        'strategy': strategy,
         'score': score,
         'raw_data': response
     }
@@ -83,6 +84,6 @@ def run_pagespeed_analysis(psi_service, url_to_check, strategy='desktop'):
 
     if r:
         logger.info('Done. Analysis made successfuly.')
-        analysis_result = treat_pagespeed_response(r)
+        analysis_result = treat_pagespeed_response(response=r, strategy=strategy)
     
     return analysis_result

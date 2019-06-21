@@ -16,6 +16,7 @@ setup(
     license='MIT',
     install_requires=[
         'Django>=2.0',
+        'django-model-utils',
         'progressbar2',
         'google-api-python-client',
     ]
