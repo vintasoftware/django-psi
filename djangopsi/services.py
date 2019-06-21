@@ -1,4 +1,5 @@
 import logging
+import progressbar
 
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
@@ -7,6 +8,7 @@ from django.urls import URLPattern, URLResolver
 from django.urls import reverse
 from django.conf import settings
 
+progressbar.streams.wrap_stderr()
 logger = logging.getLogger(__name__)
 
 def treat_pagespeed_response(response):
@@ -52,17 +54,17 @@ def get_all_project_urls_to_check(urlpatterns=None, url_list=[]):
 
     return url_list
 
-def check_urls_in_pagespeed(psi_service, urls, base_url):
+def check_urls_in_pagespeed(psi_service, urls, base_url, strategy):
     url_reports = []
-    for url in urls:
-        report = run_pagespeed_analysis(psi_service, base_url + url['path'])
+    for i in progressbar.progressbar(range(len(urls)), redirect_stdout=True):
+        report = run_pagespeed_analysis(psi_service, base_url + urls[i]['path'], strategy)
         if report:
-            url_reports.append({'url': url, 'psi_report': report})
+            url_reports.append({'url': urls[i], 'psi_report': report})
 
     return url_reports
 
 
-def run_pagespeed_analysis(psi_service, url_to_check):
+def run_pagespeed_analysis(psi_service, url_to_check, strategy='desktop'):
 
     try:
         URLValidator(url_to_check)
@@ -73,8 +75,9 @@ def run_pagespeed_analysis(psi_service, url_to_check):
     logger.info('Analyzing url in pagespeed: {url}'.format(url=url_to_check))
 
     analysis_result = False
+    r = None
     try:
-        r = psi_service.pagespeedapi().runpagespeed(url=url_to_check, strategy='desktop').execute()
+        r = psi_service.pagespeedapi().runpagespeed(url=url_to_check, strategy=strategy).execute()
     except:
         logger.error('There was an error analyzing this url.')
 

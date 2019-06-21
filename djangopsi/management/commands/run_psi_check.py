@@ -8,6 +8,7 @@ from django.conf import settings
 
 from djangopsi.services import get_all_project_urls_to_check, check_urls_in_pagespeed
 
+
 logger = logging.getLogger(__name__)
 
 PSI_GOOGLE_API_DEV_KEY = settings.PSI_GOOGLE_API_DEV_KEY
@@ -24,6 +25,15 @@ class Command(BaseCommand):
             default='production',
             help='The environment where tests are going to be run',
         )
+
+        parser.add_argument(
+            '-s',
+            '--strategy',
+            action='store',
+            dest='strategy',
+            default='desktop',
+            help='The strategy used to run',
+        )
         
         parser.add_argument(
             '-c',
@@ -33,11 +43,20 @@ class Command(BaseCommand):
             help='Output the results to the console',
         )
 
-    def _console_report(self, report_list, base_url):
+        # parser.add_argument(
+        #     '-v',
+        #     '--verbose',
+        #     action='store_true',
+        #     dest='verbose',
+        #     help='Runs in verbose mode',
+        # )
+
+    def _console_report(self, report_list, base_url, strategy):
         print("\n" + "PageSpeed Insights")
         print("--------------------------------------------\n")
 
-        print("Statistics for {0}\n".format(base_url))
+        print("Statistics for {0}".format(base_url))
+        print("Strategy used: {0}\n".format(strategy))
 
         for report in report_list:
             print("Name: {0}".format(report['url']['name']))
@@ -76,8 +95,11 @@ class Command(BaseCommand):
         
         urls_to_check = get_all_project_urls_to_check()
         
-        url_reports = check_urls_in_pagespeed(psi_service, urls_to_check, analysis_base_url)
+        if options['strategy']:
+            url_reports = check_urls_in_pagespeed(psi_service, urls_to_check, analysis_base_url, options['strategy'])
+        else:
+            url_reports = check_urls_in_pagespeed(psi_service, urls_to_check, analysis_base_url)
 
         if options['console']:
-            self._console_report(report_list=url_reports, base_url=analysis_base_url)
+            self._console_report(report_list=url_reports, base_url=analysis_base_url, strategy=options['strategy'])
 
