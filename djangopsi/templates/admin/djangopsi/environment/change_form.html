@@ -1,0 +1,13 @@
+
+
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls %}
+
+{% block object-tools %}
+{% if change %}{% if not is_popup %}
+<ul class="object-tools">  
+    {% url opts|admin_urlname:'dashboard' original.pk|admin_urlquote as dashboard_url %}
+    <li><a href="{% add_preserved_filters dashboard_url %}" class="historylink">{% trans "Dashboard" %}</a></li>
+</ul>
+{% endif %}{% endif %}
+{% endblock %}

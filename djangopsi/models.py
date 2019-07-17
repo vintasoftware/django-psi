@@ -11,12 +11,14 @@ class IndexedTimeStampedModel(models.Model):
     class Meta:
         abstract = True
 
+
 class Environment(IndexedTimeStampedModel):
     name = models.CharField(max_length=255, unique=True)
     base_url = models.CharField(max_length=255)
 
     def __str__(self):
         return "{env.name} - {env.base_url}".format(env=self)
+
 
 class Url(IndexedTimeStampedModel):
     name = models.CharField(max_length=255)
@@ -26,6 +28,7 @@ class Url(IndexedTimeStampedModel):
     def __str__(self):
         return "{url.name} - {url.path}".format(url=self)
 
+
 class Report(IndexedTimeStampedModel):
     psi_id = models.CharField(max_length=255)
     strategy = models.CharField(max_length=255)
@@ -33,4 +36,3 @@ class Report(IndexedTimeStampedModel):
     score = models.FloatField()
     raw_data = JSONField()
     url = models.ForeignKey('Url', related_name='reports', on_delete=models.CASCADE)
-    pass

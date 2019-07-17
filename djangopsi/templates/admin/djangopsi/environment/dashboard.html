@@ -1,0 +1,103 @@
+{% extends "admin/base_site.html" %}
+{% load admin_urls %}
+
+{% block extrahead %}
+      {{ block.super }}
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.bundle.js"></script>
+{% endblock %}
+
+{% block extrastyle %}
+      {{ block.super }}
+{% endblock %}
+
+{% block breadcrumbs %}
+      {% if not is_popup %}
+            <div class="breadcrumbs">  
+                  <a href="../../../../">Home</a> ›
+                  <a href="../../../">{{ opts.app_label|capfirst|escape }}</a> ›
+                  <a href="../../">{{ opts.verbose_name_plural|capfirst }}</a> ›
+                  <a href="../">{{ environment }}</a> ›
+                  Dashboard
+            </div>
+      {% endif %}
+{% endblock %}
+
+{% block content %}
+      <canvas id="productsChart" width="300" height="100"></canvas>
+
+      <ul>
+      {% for path in paths %}
+            {% url opts|admin_urlname:'url_dashboard' id=environment.id url_id=path.id|admin_urlquote as dashboard_url %}
+            <li><a href="{% add_preserved_filters dashboard_url %}">{{path.name}}</a></li>
+      {% endfor %}
+      </ul>
+{% endblock %}
+
+{% block footer %}
+      {{ block.super }}
+
+      <script>
+            var ctx = document.getElementById("productsChart");
+            var marks = JSON.parse('{{ marks|safe }}');
+            var overall_mobile_scores = JSON.parse('{{ overall_mobile_scores|safe }}');
+            var overall_desktop_scores = JSON.parse('{{ overall_desktop_scores|safe }}');
+            var productsChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                  labels: marks,
+                  datasets: [{
+                        label: 'Overall Mobile',
+                        data: overall_mobile_scores,
+                        backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                        'rgba(255,99,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                  },
+                  {
+                        label: 'Overall Desktop',
+                        data: overall_desktop_scores,
+                        backgroundColor: [
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+                        'rgba(255, 99, 132, 0.2)'
+                        ],
+                        borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(255,99,132,1)'
+                        ],
+                        borderWidth: 1
+                  }]
+            },
+            options: {
+                  spanGaps: true,
+                  scales: {
+                        yAxes: [{
+                        ticks: {
+                              beginAtZero:true
+                        }
+                        }]
+                  }
+            }
+            });
+      </script>
+{% endblock %}

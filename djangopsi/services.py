@@ -11,6 +11,7 @@ from django.conf import settings
 progressbar.streams.wrap_stderr()
 logger = logging.getLogger(__name__)
 
+
 def treat_pagespeed_response(response, strategy):
     report = False
 
@@ -27,6 +28,7 @@ def treat_pagespeed_response(response, strategy):
     }
 
     return report
+
 
 # As in: https://stackoverflow.com/questions/32933229
 # /how-to-get-a-list-of-all-views-in-a-django-application
@@ -54,6 +56,7 @@ def get_all_project_urls_to_check(urlpatterns=None, url_list=[]):
                 )
 
     return url_list
+
 
 def check_urls_in_pagespeed(psi_service, urls, base_url, strategy):
     url_reports = []
