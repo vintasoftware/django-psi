@@ -23,14 +23,17 @@ PSI_ENVS = {
 Options:
 
 ```
--v -vv -vvv
-    Verbose mode.
-
 -c --console
     Outputs the report in the console
 
 --env=ENV
-    Default value is staging.
+    Env in which the analysis will be made. Default value is `production`.
+
+-k --keep
+    Persist the report to the database
+
+--strategy=STRATEGY
+    Strategy to be used on the analysis. Default value is `desktop`.
 ```
 
 

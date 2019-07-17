@@ -28,7 +28,6 @@ class Command(BaseCommand):
         )
 
         parser.add_argument(
-            '-s',
             '--strategy',
             action='store',
             dest='strategy',
