@@ -6,8 +6,9 @@ from django.conf import settings
 from apiclient.discovery import build
 from django.conf import settings
 
-from djangopsi.models import Environment
-from djangopsi.services import get_all_project_urls_to_check, check_urls_in_pagespeed
+from djangopsi.models import Environment, ReportGroup
+from djangopsi.services.retrievers import get_all_project_urls_to_check, check_urls_in_pagespeed
+from djangopsi.services.formatters import format_report_group_slack_message_json, print_report_group_console_report
 
 
 logger = logging.getLogger(__name__)
@@ -31,7 +32,7 @@ class Command(BaseCommand):
             '--strategy',
             action='store',
             dest='strategy',
-            default='desktop',
+            default='all',
             help='The strategy used to run',
         )
         
@@ -51,6 +52,14 @@ class Command(BaseCommand):
             help='Saves the report to the database',
         )
 
+        parser.add_argument(
+            '--slack-message',
+            action='store_true',
+            dest='slack_message',
+            default=False,
+            help='Messages the user on Slack',
+        )
+
         # parser.add_argument(
         #     '-v',
         #     '--verbose',
@@ -59,32 +68,14 @@ class Command(BaseCommand):
         #     help='Runs in verbose mode',
         # )
 
-    def _console_report(self, report_list, base_url, strategy):
-        print("\n" + "PageSpeed Insights")
-        print("--------------------------------------------\n")
-
-        print("Statistics for {0}".format(base_url))
-        print("Strategy used: {0}\n".format(strategy))
-
-        for report in report_list:
-            print("Name: {0}".format(report['url']['name']))
-            print("----- path: {0}".format(report['url']['path']))
-            if report['psi_report']:
-                print("----- category: {0}".format(report['psi_report']['category']))
-                print("----- score: {0}\n".format(report['psi_report']['score']))
-            else:
-                print("----- report failed")
-            
-        print("--------------------------------------------")
-        print("\n")
-
+    def _console_report(self, base_url, report_list, strategy):
+        print_report_group_console_report(base_url, report_list, strategy)
 
     def _safety_check(self):
         # Check if there are production env settings
         if not (settings.PSI_ENVS['production'] or settings.PSI_ENVS['production']['base_url']):
             logger.error('FAIL AND EXIT')
             # raise Error
-
 
     def handle(self, *args, **options):
         # XXX TODO safety checks
@@ -104,13 +95,16 @@ class Command(BaseCommand):
         
         urls_to_check = get_all_project_urls_to_check()
         
-        if options['strategy']:
+        url_reports = []
+        if options['strategy'] != 'all':
             url_reports = check_urls_in_pagespeed(psi_service, urls_to_check, analysis_base_url, options['strategy'])
         else:
-            url_reports = check_urls_in_pagespeed(psi_service, urls_to_check, analysis_base_url)
+            url_reports += check_urls_in_pagespeed(psi_service, urls_to_check, analysis_base_url, 'mobile')
+            url_reports += check_urls_in_pagespeed(psi_service, urls_to_check, analysis_base_url, 'desktop')
 
         if options['keep']:
             env, _ = Environment.objects.get_or_create(name=environment, base_url=analysis_base_url)
+            report_group = ReportGroup.objects.create(environment=env)
             for report in url_reports:
                 url, _ = env.urls.get_or_create(name=report['url']['name'], path=report['url']['path'])
                 url.reports.create(
@@ -118,9 +112,16 @@ class Command(BaseCommand):
                     strategy=report['psi_report']['strategy'],
                     category=report['psi_report']['category'],
                     score=report['psi_report']['score'],
-                    raw_data=report['psi_report']['raw_data']
+                    raw_data=report['psi_report']['raw_data'],
+                    report_group=report_group
                 )
 
         if options['console']:
-            self._console_report(report_list=url_reports, base_url=analysis_base_url, strategy=options['strategy'])
+            self._console_report(base_url=analysis_base_url, report_list=url_reports, strategy=options['strategy'])
+
+        if options['slack_message']:
+            requests.post(
+                settings.PSI_SLACK_MESSAGE_HOOK,
+                json=format_report_group_slack_message_json(report_group)
+            )
 

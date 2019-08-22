@@ -1,2 +1,4 @@
-Django>=1.11
+Django>=2.0
+django-model-utils
+progressbar2
 google-api-python-client

@@ -12,3 +12,7 @@ djangopsi/decorators.py
 djangopsi/models.py
 djangopsi/services.py
 djangopsi/tests.py
+djangopsi/templates/admin/djangopsi/environment/change_form.html
+djangopsi/templates/admin/djangopsi/environment/dashboard.html
+djangopsi/templates/admin/djangopsi/environment/report_group_dashboard.html
+djangopsi/templates/admin/djangopsi/environment/url_dashboard.html

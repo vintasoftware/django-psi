@@ -7,7 +7,7 @@ from django.conf.urls import url
 from django.shortcuts import render
 from django.db.models import Avg
 
-from .models import Environment, Report, Url
+from .models import Environment, Report, Url, ReportGroup
 
 
 def get_marks_and_scores(reports):
@@ -56,6 +56,7 @@ def get_marks_and_scores(reports):
 class EnvironmentAdmin(admin.ModelAdmin):  
     dashboard_template = 'admin/djangopsi/environment/dashboard.html'
     url_dashboard_template = 'admin/djangopsi/environment/url_dashboard.html'
+    report_group_dashboard_template = 'admin/djangopsi/environment/report_group_dashboard.html'
     readonly_fields = ['name', 'base_url']
 
     def get_urls(self):
@@ -69,6 +70,11 @@ class EnvironmentAdmin(admin.ModelAdmin):
         info = self.model._meta.app_label, self.model._meta.model_name
 
         my_urls = [
+            url(
+                r'(?P<id>\d+)/report_group/(?P<report_group_id>\d+)/dashboard/$',
+                wrap(self.report_group_dashboard),
+                name='%s_%s_report_group_dashboard' % info
+            ),
             url(
                 r'(?P<id>\d+)/url/(?P<url_id>\d+)/dashboard/$',
                 wrap(self.url_dashboard),
@@ -118,6 +124,38 @@ class EnvironmentAdmin(admin.ModelAdmin):
             'environment': environment,
             'path': path,
             'marks': json.dumps(marks),
+            'overall_mobile_scores': json.dumps(overall_mobile_scores),
+            'overall_desktop_scores': json.dumps(overall_desktop_scores),
+            'opts': self.model._meta,
+        })
+
+    def report_group_dashboard(self, request, id, report_group_id):
+        environment = Environment.objects.get(pk=id)
+        report_group = ReportGroup.objects.get(pk=report_group_id)
+        paths = environment.urls.all()
+        mobile_reports = report_group.reports.filter(strategy='mobile').aggregate(Avg('score'))
+        desktop_reports = report_group.reports.filter(strategy='desktop').aggregate(Avg('score'))
+        # XXX TODO: Check that report group belongs to environment
+
+        reports = report_group.reports.order_by('created')
+
+        (
+            marks,
+            overall_desktop_scores,
+            overall_mobile_scores
+        ) = get_marks_and_scores(reports)
+
+        return render(request, self.report_group_dashboard_template, {
+            'title': 'Page Speed Dashboard: %s environment - Report #%s' % (
+                                                            environment.name,
+                                                            report_group.id
+                                                       ),
+            'environment': environment,
+            'marks': json.dumps(marks),
+            'paths': paths,
+            'report_group': report_group,
+            'mobile_reports': mobile_reports,
+            'desktop_reports': desktop_reports,
             'overall_mobile_scores': json.dumps(overall_mobile_scores),
             'overall_desktop_scores': json.dumps(overall_desktop_scores),
             'opts': self.model._meta,

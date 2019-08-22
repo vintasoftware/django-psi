@@ -32,22 +32,22 @@ def treat_pagespeed_response(response, strategy):
 
 # As in: https://stackoverflow.com/questions/32933229
 # /how-to-get-a-list-of-all-views-in-a-django-application
-def get_all_project_urls_to_check(urlpatterns=None, url_list=[]):
+def get_all_project_urls_to_check(urlpatterns=None, url_list=[], namespace=None):
     if not urlpatterns:
         root_urlconf = __import__(settings.ROOT_URLCONF)  # import root_urlconf module
         urlpatterns = root_urlconf.urls.urlpatterns  # project's urlpatterns
 
     for pattern in urlpatterns:
         if isinstance(pattern, URLResolver):
-            # call this function recursively
-            get_all_project_urls_to_check(pattern.url_patterns, url_list)
+            # call this function recursively, passing the namespace
+            get_all_project_urls_to_check(pattern.url_patterns, url_list, namespace=pattern.namespace)
         elif isinstance(pattern, URLPattern):
             callback_func = pattern.callback
             if hasattr(callback_func, 'view_class') and \
                     hasattr(callback_func.view_class, 'is_psi_checked') and \
                     callback_func.view_class.is_psi_checked:
-                pattern_name = pattern.name
-                pattern_url = reverse(pattern.name)
+                pattern_name = '{}:{}'.format(namespace, pattern.name) if namespace else pattern.name
+                pattern_url = reverse(pattern_name)
                 url_list.append(
                     {
                         'name': pattern_name,

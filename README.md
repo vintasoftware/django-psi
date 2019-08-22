@@ -1,24 +1,52 @@
 # Django PSI
 
+### Requirements:
+- PostgreSQL Database (for JSON fields)
+- Google API Dev Credentials
+
 ### Settings
 
-Add the env settings to your settings.py
+1. Add the env settings to your settings.py
 ```python
+PSI_GOOGLE_API_DEV_KEY = 'MYKEY'
+PSI_SLACK_MESSAGE_HOOK = 'http://myslackmessagehook/zxcvbn'
+PROTOCOL = 'HTTP'
+DOMAIN = 'www.example-site.com'
+ADMIN_PATH = '/admin'
 PSI_ENVS = {
     'production': {
-        'base_url': 'https://splendidspoon.com',
+        'base_url': 'https://example-site.com',
     },
     'staging': {
-        'base_url': 'https://splendidspoon-staging.herokuapp.com',
+        'base_url': 'https://staging-example-site.com',
     }
 }
 ```
 
-1. Decorate your class-based views with `@is_psi_checked`
+2. Add Django psi to installed apps
 
-2. Run command run_psi_check
+```python
+INSTALLED_APPS = [
+    ...
+    'djangopsi',
+    ...
+]
+```
 
-`python manage.py run_psi_check -c`
+3. Decorate your class-based views with `@is_psi_checked`
+
+```python
+from djangopsi.decorators import is_psi_checked
+
+
+@is_psi_checked
+class ExampleView(generic.TemplateView):
+    ...
+```
+
+4. Run command run_psi_check
+
+`python manage.py run_psi_check -c -k --slack-message`
 
 Options:
 
