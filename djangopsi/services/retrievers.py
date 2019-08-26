@@ -3,7 +3,6 @@ import progressbar
 
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
-# from django.core.urlresolvers import RegexURLResolver, RegexURLPattern
 from django.urls import URLPattern, URLResolver
 from django.urls import reverse
 from django.conf import settings
@@ -30,7 +29,7 @@ def treat_pagespeed_response(response, strategy):
     return report
 
 
-# As in: https://stackoverflow.com/questions/32933229
+# Improved version of: https://stackoverflow.com/questions/32933229
 # /how-to-get-a-list-of-all-views-in-a-django-application
 def get_all_project_urls_to_check(urlpatterns=None, url_list=[], namespace=None):
     if not urlpatterns:
@@ -69,7 +68,6 @@ def check_urls_in_pagespeed(psi_service, urls, base_url, strategy):
 
 
 def run_pagespeed_analysis(psi_service, url_to_check, strategy='desktop'):
-
     try:
         URLValidator(url_to_check)
     except ValidationError:

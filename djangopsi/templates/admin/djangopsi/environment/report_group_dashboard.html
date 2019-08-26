@@ -3,7 +3,24 @@
 
 {% block extrahead %}
       {{ block.super }}
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.bundle.js"></script>
+      <script src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
+      <script>
+            var opts = {
+                  angle: 0.15,
+                  lineWidth: 0.44,
+                  radiusScale: 1,
+                  pointer: {
+                        length: 0.6,
+                        strokeWidth: 0.035,
+                        color: '#000000'
+                  },
+                  limitMax: true,
+                  limitMin: true,
+                  percentColors: [[0.0, "#eb0f00" ], [0.49, "#eb0f00" ], [0.89, "#ffa400"], [1.0, "#0cce6b"]],
+                  strokeColor: '#E0E0E0',
+                  highDpiSupport: true,
+            };
+      </script>
 {% endblock %}
 
 {% block extrastyle %}
@@ -13,10 +30,10 @@
 {% block breadcrumbs %}
       {% if not is_popup %}
             <div class="breadcrumbs">  
-                  <a href="../../../../">Home</a> ›
-                  <a href="../../../">{{ opts.app_label|capfirst|escape }}</a> ›
-                  <a href="../../">{{ opts.verbose_name_plural|capfirst }}</a> ›
-                  <a href="../">{{ environment }}</a> ›
+                  <a href="../../../../../../">Home</a> ›
+                  <a href="../../../../../">{{ opts.app_label|capfirst|escape }}</a> ›
+                  <a href="../../../../">{{ opts.verbose_name_plural|capfirst }}</a> ›
+                  <a href="../../../">{{ environment }}</a> ›
                   Dashboard
             </div>
       {% endif %}
@@ -25,87 +42,83 @@
 {% block content %}
         <div>
             <p>Date: {{report_group.created}}</p>
-            <p>Mobile Overall Score: {{mobile_reports.score__avg}}</p>
-            <p>Desktop Overall Score: {{desktop_reports.score__avg}}</p>
+
+            <div style="width: 50%; float: left; display: inline-block;">
+                  <h2>Mobile Overall Score: {{mobile_reports_avg}}</h2>
+                  <canvas id="overall-mobile-gauge" width="300" height="100"></canvas>
+            </div>
+            <div style="width: 50%; float: left; display: inline-block;">
+                  <h2>Desktop Overall Score: {{desktop_reports_avg}}</h2>
+                  <canvas id="overall-desktop-gauge" width="300" height="100"></canvas>
+            </div>
+            
         </div>
-
-      <canvas id="productsChart" width="300" height="100"></canvas>
-
-      <ul>
-      {% for path in paths %}
-            {% url opts|admin_urlname:'url_dashboard' id=environment.id url_id=path.id|admin_urlquote as dashboard_url %}
-            <li>
-                {{path.name}}
-            </li>
-      {% endfor %}
-      </ul>
+      
+      <div>
+            <div style="width: 50%; float: left; display: inline-block;">
+                  <ul>
+                        <h2>Mobile Reports:</h2>
+                        {% for report in mobile_reports %}
+                              <li>
+                              {{report.url.name}} - Score: {{report.score}}
+                              <br>
+                              <canvas id="overall-{{report.url.name}}-mobile-gauge" width="300" height="100"></canvas>
+                              </li>
+            
+                              <script>
+                                    var target = document.getElementById('overall-{{report.url.name}}-mobile-gauge');
+                                    var gauge = new Gauge(target).setOptions(opts);
+                                    gauge.maxValue = 100;
+                                    gauge.setMinValue(0);
+                                    gauge.animationSpeed = 32;
+                                    gauge.set({{report.score}});
+                              </script>
+                        {% endfor %}
+                  </ul>
+            </div>
+            <div style="width: 50%; float: left; display: inline-block;">
+                  <ul>
+                        <h2>Desktop Reports:</h2>
+                        {% for report in desktop_reports %}
+                              <li>
+                              {{report.url.name}} - Score: {{report.score}}
+                              <br>
+                              <canvas id="overall-{{report.url.name}}-desktop-gauge" width="300" height="100"></canvas>
+                              </li>
+            
+                              <script>
+                                    var target = document.getElementById('overall-{{report.url.name}}-desktop-gauge');
+                                    var gauge = new Gauge(target).setOptions(opts);
+                                    gauge.maxValue = 100;
+                                    gauge.setMinValue(0);
+                                    gauge.animationSpeed = 32;
+                                    gauge.set({{report.score}});
+                              </script>
+                        {% endfor %}
+                  </ul>
+            </div>
+      </div>
 {% endblock %}
 
 {% block footer %}
       {{ block.super }}
-
       <script>
-            var ctx = document.getElementById("productsChart");
-            var marks = JSON.parse('{{ marks|safe }}');
-            var overall_mobile_scores = JSON.parse('{{ overall_mobile_scores|safe }}');
-            var overall_desktop_scores = JSON.parse('{{ overall_desktop_scores|safe }}');
-            var productsChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                  labels: marks,
-                  datasets: [{
-                        label: 'Overall Mobile',
-                        data: overall_mobile_scores,
-                        backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)'
-                        ],
-                        borderColor: [
-                        'rgba(255,99,132,1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)'
-                        ],
-                        borderWidth: 1
-                  },
-                  {
-                        label: 'Overall Desktop',
-                        data: overall_desktop_scores,
-                        backgroundColor: [
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)',
-                        'rgba(255, 99, 132, 0.2)'
-                        ],
-                        borderColor: [
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)',
-                        'rgba(255,99,132,1)'
-                        ],
-                        borderWidth: 1
-                  }]
-            },
-            options: {
-                  spanGaps: true,
-                  scales: {
-                        yAxes: [{
-                        ticks: {
-                              beginAtZero:true
-                        }
-                        }]
-                  }
-            }
-            });
+            var mobileTarget = document.getElementById('overall-mobile-gauge');
+            var desktopTarget = document.getElementById('overall-desktop-gauge');
+            
+            var mobileGauge = new Gauge(mobileTarget).setOptions(opts);
+            var desktopGauge = new Gauge(desktopTarget).setOptions(opts);
+
+            mobileGauge.maxValue = 100;
+            desktopGauge.maxValue = 100;
+
+            mobileGauge.setMinValue(0);
+            desktopGauge.setMinValue(0);
+
+            mobileGauge.animationSpeed = 32;
+            desktopGauge.animationSpeed = 32;
+
+            mobileGauge.set({{mobile_reports_avg}});
+            desktopGauge.set({{desktop_reports_avg}});
       </script>
 {% endblock %}

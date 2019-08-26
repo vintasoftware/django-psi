@@ -133,31 +133,23 @@ class EnvironmentAdmin(admin.ModelAdmin):
         environment = Environment.objects.get(pk=id)
         report_group = ReportGroup.objects.get(pk=report_group_id)
         paths = environment.urls.all()
-        mobile_reports = report_group.reports.filter(strategy='mobile').aggregate(Avg('score'))
-        desktop_reports = report_group.reports.filter(strategy='desktop').aggregate(Avg('score'))
-        # XXX TODO: Check that report group belongs to environment
-
-        reports = report_group.reports.order_by('created')
-
-        (
-            marks,
-            overall_desktop_scores,
-            overall_mobile_scores
-        ) = get_marks_and_scores(reports)
+        mobile_reports = report_group.reports.filter(strategy='mobile')
+        desktop_reports = report_group.reports.filter(strategy='desktop')
+        mobile_reports_avg = mobile_reports.aggregate(Avg('score'))['score__avg']
+        desktop_reports_avg = desktop_reports.aggregate(Avg('score'))['score__avg']
 
         return render(request, self.report_group_dashboard_template, {
-            'title': 'Page Speed Dashboard: %s environment - Report #%s' % (
+            'title': 'Page Speed Dashboard: %s environment - Report Group #%s' % (
                                                             environment.name,
                                                             report_group.id
                                                        ),
             'environment': environment,
-            'marks': json.dumps(marks),
             'paths': paths,
             'report_group': report_group,
+            'mobile_reports_avg': mobile_reports_avg,
+            'desktop_reports_avg': desktop_reports_avg,
             'mobile_reports': mobile_reports,
             'desktop_reports': desktop_reports,
-            'overall_mobile_scores': json.dumps(overall_mobile_scores),
-            'overall_desktop_scores': json.dumps(overall_desktop_scores),
             'opts': self.model._meta,
         })
 
