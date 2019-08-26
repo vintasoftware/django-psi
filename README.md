@@ -44,7 +44,7 @@ class ExampleView(generic.TemplateView):
     ...
 ```
 
-4. Run command run_psi_check
+4. Run command run_psi_check, or add it to your CI process.
 
 `python manage.py run_psi_check -c -k --slack-message`
 
