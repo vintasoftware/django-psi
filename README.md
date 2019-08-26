@@ -6,7 +6,7 @@
 
 ### Settings
 
-1. Add the env settings to your settings.py
+1. Add the following settings to your Django project
 ```python
 PSI_GOOGLE_API_DEV_KEY = 'MYKEY'
 PSI_SLACK_MESSAGE_HOOK = 'http://myslackmessagehook/zxcvbn'
@@ -23,7 +23,7 @@ PSI_ENVS = {
 }
 ```
 
-2. Add Django psi to installed apps
+2. Add Django PSI to installed apps
 
 ```python
 INSTALLED_APPS = [
@@ -61,7 +61,7 @@ Options:
     Persist the report to the database
 
 --strategy=STRATEGY
-    Strategy to be used on the analysis. Default value is `desktop`.
+    Strategy to be used on the analysis. Default value is `all` (desktop and mobile).
 ```
 
 
