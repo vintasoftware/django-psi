@@ -18,8 +18,7 @@ def format_report_group_slack_message_json(report_group):
 Mobile score average: " + str(mobile_report_score) + "%, Desktop score average: " + str(desktop_report_score) + "%\r\n\
 Mobile score delta is " + str(mobile_report_score - previous_mobile_report_score) + "% by last report group\r\n\
 Desktop score delta is " + str(desktop_report_score - previous_desktop_report_score) + "% by last report group\r\n\
-For more info, check: " + settings.PROTOCOL + "://" + settings.DOMAIN + "/" +
-settings.ADMIN_PATH + "/djangopsi/environment/" +
+For more info, check: " + settings.PSI_FULL_ADMIN_PATH + "/djangopsi/environment/" +
 str(report_group.environment.id) + "/report_group/" + str(report_group.id) + "/dashboard/"}
 
 

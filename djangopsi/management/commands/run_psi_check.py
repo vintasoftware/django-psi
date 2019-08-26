@@ -99,7 +99,9 @@ class Command(BaseCommand):
         if options['strategy'] != 'all':
             url_reports = check_urls_in_pagespeed(psi_service, urls_to_check, analysis_base_url, options['strategy'])
         else:
+            self.stdout.write(self.style.SUCCESS('Generating mobile reports...'))
             url_reports += check_urls_in_pagespeed(psi_service, urls_to_check, analysis_base_url, 'mobile')
+            self.stdout.write(self.style.SUCCESS('Generating desktop reports...'))
             url_reports += check_urls_in_pagespeed(psi_service, urls_to_check, analysis_base_url, 'desktop')
 
         if options['keep']:

@@ -1,18 +1,26 @@
 # Django PSI
 
-### Requirements:
-- PostgreSQL Database (for JSON fields)
+Project badges
+
+Project short description
+
+## Documentation
+The full documentation is at https://django-psi.readthedocs.io.
+
+## Requirements:
+- A PostgreSQL Database in your Django project (for JSON fields)
 - Google API Dev Credentials
 
-### Settings
+### Optional:
+- A Slack webhook to send notifications to.
+
+## Quickstart
 
 1. Add the following settings to your Django project
 ```python
 PSI_GOOGLE_API_DEV_KEY = 'MYKEY'
 PSI_SLACK_MESSAGE_HOOK = 'http://myslackmessagehook/zxcvbn'
-PROTOCOL = 'HTTP'
-DOMAIN = 'www.example-site.com'
-ADMIN_PATH = '/admin'
+PSI_FULL_ADMIN_PATH = 'https://example-site.com/admin'
 PSI_ENVS = {
     'production': {
         'base_url': 'https://example-site.com',
@@ -64,7 +72,12 @@ Options:
     Strategy to be used on the analysis. Default value is `all` (desktop and mobile).
 ```
 
+## Security
 
-### References
+Please check SECURITY.rst. If you found or if you think you found a vulnerability please get in touch via admin AT vinta.com.br
 
-https://developers.google.com/api-client-library/python/apis/pagespeedonline/v5
+Please avoid disclosing any security issue on GitHub or any other public website. We'll work to swiftly address any possible vulnerability and give credit to reporters (if wanted).
+
+## Commercial Support
+
+This project is maintained by Vinta Software and other contributors. We are always looking for exciting work, so if you need any commercial support, feel free to get in touch: contact@vinta.com.br
