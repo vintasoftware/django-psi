@@ -1,7 +1,8 @@
 from django.conf import settings
 from django.db.models import Avg
 
-from djangopsi.models import Environment, ReportGroup, Report
+from djangopsi.models import Environment, Report, ReportGroup
+
 
 def format_report_group_slack_message_json(report_group):
     mobile_report_score = report_group.reports.filter(strategy='mobile').aggregate(Avg('score'))['score__avg']

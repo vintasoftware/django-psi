@@ -1,15 +1,15 @@
-import requests
 import logging
 
-from django.core.management.base import BaseCommand
-from django.conf import settings
 from apiclient.discovery import build
 from django.conf import settings
+from django.core.management.base import BaseCommand
 
+import requests
 from djangopsi.models import Environment, ReportGroup
-from djangopsi.services.retrievers import get_all_project_urls_to_check, check_urls_in_pagespeed
-from djangopsi.services.formatters import format_report_group_slack_message_json, print_report_group_console_report
-
+from djangopsi.services.formatters import (
+    format_report_group_slack_message_json, print_report_group_console_report)
+from djangopsi.services.retrievers import (check_urls_in_pagespeed,
+                                           get_all_project_urls_to_check)
 
 logger = logging.getLogger(__name__)
 
@@ -126,4 +126,3 @@ class Command(BaseCommand):
                 settings.PSI_SLACK_MESSAGE_HOOK,
                 json=format_report_group_slack_message_json(report_group)
             )
-

@@ -1,13 +1,13 @@
-import json
 import datetime
-
+import json
 from functools import update_wrapper
-from django.contrib import admin
-from django.conf.urls import url
-from django.shortcuts import render
-from django.db.models import Avg
 
-from .models import Environment, Report, Url, ReportGroup
+from django.conf.urls import url
+from django.contrib import admin
+from django.db.models import Avg
+from django.shortcuts import render
+
+from .models import Environment, Report, ReportGroup, Url
 
 
 def get_marks_and_scores(reports):
