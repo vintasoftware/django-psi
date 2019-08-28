@@ -1,5 +1,4 @@
 import logging
-import progressbar
 
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
@@ -7,7 +6,6 @@ from django.urls import URLPattern, URLResolver
 from django.urls import reverse
 from django.conf import settings
 
-progressbar.streams.wrap_stderr()
 logger = logging.getLogger(__name__)
 
 
@@ -59,7 +57,7 @@ def get_all_project_urls_to_check(urlpatterns=None, url_list=[], namespace=None)
 
 def check_urls_in_pagespeed(psi_service, urls, base_url, strategy):
     url_reports = []
-    for i in progressbar.progressbar(range(len(urls)), redirect_stdout=True):
+    for i in range(len(urls)):
         report = run_pagespeed_analysis(psi_service, base_url + urls[i]['path'], strategy)
         if report:
             url_reports.append({'url': urls[i], 'psi_report': report})
