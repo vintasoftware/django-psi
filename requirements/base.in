@@ -1,0 +1,6 @@
+# Core requirements for using this application
+
+Django>=2.0
+django-model-utils
+google-api-python-client
+psycopg2
