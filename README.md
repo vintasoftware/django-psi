@@ -70,6 +70,9 @@ Options:
 
 --strategy=STRATEGY
     Strategy to be used on the analysis. Default value is `all` (desktop and mobile).
+
+--slack-message
+    Notifies and links on Slack about the report made.
 ```
 
 ## Security
