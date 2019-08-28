@@ -9,7 +9,7 @@ cachetools==3.1.1         # via google-auth
 cfgv==2.0.1               # via pre-commit
 click==7.0                # via pip-tools
 django-model-utils==3.2.0
-django==2.2.4
+django==2.1
 google-api-python-client==1.7.11
 google-auth-httplib2==0.0.3  # via google-api-python-client
 google-auth==1.6.3        # via google-api-python-client, google-auth-httplib2
@@ -28,7 +28,6 @@ pytz==2019.2              # via django
 pyyaml==5.1.2             # via aspy.yaml, pre-commit
 rsa==4.0                  # via google-auth
 six==1.12.0               # via cfgv, google-api-python-client, google-auth, pip-tools, pre-commit
-sqlparse==0.3.0           # via django
 toml==0.10.0              # via pre-commit
 uritemplate==3.0.0        # via google-api-python-client
 virtualenv==16.7.4        # via pre-commit
