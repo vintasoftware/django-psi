@@ -1,5 +1,3 @@
 # Additional requirements for development of this application
 
--r base.in
-pre-commit                  # Run hooks before commiting
 pip-tools                   # Requirements file management
