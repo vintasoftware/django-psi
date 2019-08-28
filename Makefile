@@ -3,11 +3,10 @@ upgrade: ## update the requirements/*.txt files with the latest packages satisfy
 	pip-compile --upgrade -o requirements/dev.txt requirements/base.in requirements/dev.in requirements/quality.in
 	pip-compile --upgrade -o requirements.txt requirements/base.in requirements/prod.in
 	# Remove Django from requirements.txt
-	sed '/django==/d' requirements.txt > requirements.tmp
-	mv requirements.tmp requirements.txt
+	sed '/django==/d' requirements.txt > requirements.tmp; mv requirements.tmp requirements.txt
+	sed '/# via django$$/d' requirements.txt > requirements.tmp; mv requirements.tmp requirements.txt
 	# Make everything =>, not ==
-	sed 's/==/>=/g' requirements.txt > requirements.tmp
-	mv requirements.tmp requirements.txt
+	sed 's/==/>=/g' requirements.txt > requirements.tmp; mv requirements.tmp requirements.txt
 	pip-compile --upgrade -o requirements/doc.txt requirements/base.in requirements/doc.in
 	pip-compile --upgrade -o requirements/quality.txt requirements/quality.in
 	pip-compile --upgrade -o requirements/test.txt requirements/base.in requirements/test.in
