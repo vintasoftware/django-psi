@@ -5,14 +5,10 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('djangopsi', '0001_initial'),
-    ]
+    dependencies = [("djangopsi", "0001_initial")]
 
     operations = [
         migrations.AlterField(
-            model_name='report',
-            name='score',
-            field=models.FloatField(),
-        ),
+            model_name="report", name="score", field=models.FloatField()
+        )
     ]

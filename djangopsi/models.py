@@ -5,8 +5,8 @@ from model_utils.fields import AutoCreatedField, AutoLastModifiedField
 
 
 class IndexedTimeStampedModel(models.Model):
-    created = AutoCreatedField(_('created'), db_index=True)
-    modified = AutoLastModifiedField(_('modified'), db_index=True)
+    created = AutoCreatedField(_("created"), db_index=True)
+    modified = AutoLastModifiedField(_("modified"), db_index=True)
 
     class Meta:
         abstract = True
@@ -24,7 +24,7 @@ class Url(IndexedTimeStampedModel):
     name = models.CharField(max_length=255)
     path = models.CharField(max_length=255)
     environment = models.ForeignKey(
-        'Environment', related_name='urls', on_delete=models.CASCADE
+        "Environment", related_name="urls", on_delete=models.CASCADE
     )
 
     def __str__(self):
@@ -37,25 +37,16 @@ class Report(IndexedTimeStampedModel):
     category = models.CharField(max_length=255)
     score = models.FloatField()
     raw_data = JSONField()
-    url = models.ForeignKey(
-        'Url', related_name='reports', on_delete=models.CASCADE
-    )
+    url = models.ForeignKey("Url", related_name="reports", on_delete=models.CASCADE)
     report_group = models.ForeignKey(
-        'ReportGroup',
-        related_name='reports',
-        on_delete=models.CASCADE,
-        null=True
+        "ReportGroup", related_name="reports", on_delete=models.CASCADE, null=True
     )
 
 
 class ReportGroup(IndexedTimeStampedModel):
     environment = models.ForeignKey(
-        'Environment',
-        related_name='report_groups',
-        on_delete=models.CASCADE,
-        null=True
+        "Environment", related_name="report_groups", on_delete=models.CASCADE, null=True
     )
 
     def __str__(self):
-        return "Report made at {report_group.created}"\
-            .format(report_group=self)
+        return "Report made at {report_group.created}".format(report_group=self)
