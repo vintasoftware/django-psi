@@ -1,10 +1,9 @@
 import logging
 
-from django.core.validators import URLValidator
-from django.core.exceptions import ValidationError
-from django.urls import URLPattern, URLResolver
-from django.urls import reverse
 from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.core.validators import URLValidator
+from django.urls import URLPattern, URLResolver, reverse
 
 logger = logging.getLogger(__name__)
 
