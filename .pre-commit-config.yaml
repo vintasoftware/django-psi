@@ -12,7 +12,6 @@ repos:
   - id: check-symlinks
   - id: debug-statements
   - id: detect-private-key
-
 - repo: local
   hooks:
   - id: isort
@@ -22,3 +21,8 @@ repos:
     types: [python]
     exclude: .+/(settings|migrations)/.+
     pass_filenames: true
+- repo: https://github.com/psf/black
+  rev: stable
+  hooks:
+  - id: black
+    language_version: python3.6
