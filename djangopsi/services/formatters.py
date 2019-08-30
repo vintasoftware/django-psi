@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db.models import Avg
 
-from djangopsi.models import Environment, Report, ReportGroup
+from djangopsi.models import ReportGroup
 
 
 def format_report_group_slack_message_json(report_group):

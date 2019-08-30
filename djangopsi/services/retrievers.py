@@ -86,7 +86,7 @@ def run_pagespeed_analysis(psi_service, url_to_check, strategy="desktop"):
             .runpagespeed(url=url_to_check, strategy=strategy)
             .execute()
         )
-    except:
+    except Exception:
         logger.error("There was an error analyzing this url.")
 
     if r:

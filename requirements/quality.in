@@ -1,4 +1,4 @@
 # Requirements for code quality checks
 
 isort                     # imports sorter for python
-pre-commit                # pre-commit hooks for git
+flake8                    # Style Guide Enforcement
