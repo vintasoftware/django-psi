@@ -12,8 +12,8 @@ setup(
     description="TODO description",  # XXX
     long_description=README,
     author="Tiago da Costa Melo",
-    author_email="tiagodacostamelo@gmail.com",
-    url="https://github.com/tcostam/django-psi/",
+    author_email="tiago@vinta.com.br",
+    url="https://github.com/vintasoftware/django-psi/",
     license="MIT",
-    install_requires=["Django>=2.0", "django-model-utils", "google-api-python-client"],
+    install_requires=["django-model-utils>=3.2.0", "google-api-python-client>=1.7.11"],
 )
