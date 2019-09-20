@@ -6,9 +6,6 @@
 
 Project short description
 
-## Documentation
-The full documentation is at https://django-psi.readthedocs.io.
-
 ## Requirements:
 - A PostgreSQL Database in your Django project (for JSON fields)
 - Google API Dev Credentials
@@ -79,7 +76,7 @@ Options:
 
 ## Security
 
-Please check SECURITY.rst. If you found or if you think you found a vulnerability please get in touch via admin AT vinta.com.br
+Please check SECURITY.md. If you found or if you think you found a vulnerability please get in touch via admin AT vinta.com.br
 
 Please avoid disclosing any security issue on GitHub or any other public website. We'll work to swiftly address any possible vulnerability and give credit to reporters (if wanted).
 
