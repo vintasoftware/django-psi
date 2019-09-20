@@ -10,9 +10,6 @@ db.sqlite3
 /mediafiles/*
 /htmlcov/
 
-# Sublime
-tox.ini
-
 # pycharm
 .idea
 
