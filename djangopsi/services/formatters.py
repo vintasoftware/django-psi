@@ -1,10 +1,19 @@
+import logging
+
 from django.conf import settings
 from django.db.models import Avg
 
 from djangopsi.models import ReportGroup
 
+logger = logging.getLogger(__name__)
+
 
 def format_report_group_slack_message_json(report_group):
+
+    if not report_group:
+        logger.error("There was no report_group passed")
+        return
+
     mobile_report_score = report_group.reports.filter(strategy="mobile").aggregate(
         Avg("score")
     )["score__avg"]

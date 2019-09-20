@@ -16,6 +16,9 @@ tox.ini
 # pycharm
 .idea
 
+# Visual Studio Code
+.vscode
+
 # data
 *.dump
 
@@ -58,6 +61,3 @@ spritesmith.scss
 
 # Personal
 /_personal/
-
-# Visual Studio Code config
-.vscode
