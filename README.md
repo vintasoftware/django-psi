@@ -1,7 +1,7 @@
 # Django PSI
 
 [![Build Status](https://travis-ci.org/vintasoftware/django-psi.svg?branch=develop)](https://travis-ci.org/vintasoftware/django-psi)
-[![codecov](https://codecov.io/gh/vintasoftware/django-psi/branch/master/graph/badge.svg)](https://codecov.io/gh/vintasoftware/django-psi)
+[![codecov](https://codecov.io/gh/vintasoftware/django-psi/branch/develop/graph/badge.svg)](https://codecov.io/gh/vintasoftware/django-psi)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 Project short description
