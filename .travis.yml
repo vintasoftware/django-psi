@@ -2,6 +2,21 @@
 
 language: python
 
+python:
+  - "3.5"
+  - "3.6"
+  - "3.7"
+
+env:
+  - DJANGO=master
+  - DJANGO=2.2
+  - DJANGO=2.1
+  - DJANGO=2.0
+
+matrix:
+  allow_failures:
+    - env: DJANGO=master
+
 addons:
   postgresql: "10"
 
