@@ -11,6 +11,9 @@ upgrade: ## update the requirements/*.txt files with the latest packages satisfy
 	pip-compile --upgrade -o requirements/quality.txt requirements/quality.in
 	pip-compile --upgrade -o requirements/test.txt requirements/base.in requirements/test.in
 	pip-compile --upgrade -o requirements/travis.txt requirements/travis.in
+	# Let tox control the Django version for tests
+	sed '/django==/d' requirements/test.txt > requirements/test.tmp; mv requirements/test.tmp requirements/test.txt
+	sed '/# via django$$/d' requirements/test.txt > requirements/test.tmp; mv requirements/test.tmp requirements/test.txt
 
 install_requirements: ## install development environment requirements
 	pip install -qr requirements/dev.txt -qr requirements/test.txt -qr requirements/quality.txt --exists-action w
