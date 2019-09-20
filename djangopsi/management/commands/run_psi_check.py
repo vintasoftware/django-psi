@@ -1,10 +1,10 @@
 import logging
 
+import requests
 from apiclient.discovery import build
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-import requests
 from djangopsi.models import Environment, ReportGroup
 from djangopsi.services.formatters import (
     format_report_group_slack_message_json,
@@ -122,6 +122,7 @@ class Command(BaseCommand):
                 psi_service, urls_to_check, analysis_base_url, "desktop"
             )
 
+        report_group = None
         if options["keep"]:
             env, _ = Environment.objects.get_or_create(
                 name=environment, base_url=analysis_base_url
