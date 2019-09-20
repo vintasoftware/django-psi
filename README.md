@@ -4,7 +4,8 @@
 [![codecov](https://codecov.io/gh/vintasoftware/django-psi/branch/develop/graph/badge.svg)](https://codecov.io/gh/vintasoftware/django-psi)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-Project short description
+Django PSI is a tool for generating and visualizing Page Speed performance reports using Google's PSI API.
+Have a timeline with your score progress, integrate to your CI tool and enable performance tracking per release.
 
 ## Requirements:
 - A PostgreSQL Database in your Django project (for JSON fields)
