@@ -11,7 +11,7 @@ install:
 script:
   - sudo su - postgres -c "psql -c \"CREATE USER djangopsi WITH PASSWORD 'dev1' SUPERUSER;\""
   - sleep 10
-  - python test_manage.py test
+  - tox
 
 after_success:
   - codecov
