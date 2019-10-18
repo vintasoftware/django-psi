@@ -54,3 +54,11 @@ TEMPLATES = [
 ]
 
 STATIC_URL = "/static/"
+
+PSI_GOOGLE_API_DEV_KEY = "EXAMPLEPSIAPIKEY"
+PSI_ENVS = {
+    "production": {"base_url": "http://example.com"},
+    "staging": {"base_url": "http://staging.example.com"},
+}
+PSI_SLACK_MESSAGE_HOOK = "http://slackhook.example.com"
+PSI_FULL_ADMIN_PATH = "http://example.com"

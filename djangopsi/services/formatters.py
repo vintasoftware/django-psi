@@ -20,20 +20,26 @@ def format_report_group_slack_message_json(report_group):
     desktop_report_score = report_group.reports.filter(strategy="desktop").aggregate(
         Avg("score")
     )["score__avg"]
-    previous_mobile_report_score = (
-        ReportGroup.objects.filter(created__lt=report_group.created)
-        .order_by("created")
-        .last()
-        .reports.filter(strategy="mobile")
-        .aggregate(Avg("score"))["score__avg"]
-    )
-    previous_desktop_report_score = (
-        ReportGroup.objects.filter(created__lt=report_group.created)
-        .order_by("created")
-        .last()
-        .reports.filter(strategy="desktop")
-        .aggregate(Avg("score"))["score__avg"]
-    )
+
+    previous_report = ReportGroup.objects.filter(created__lt=report_group.created)
+    if previous_report:
+        previous_mobile_report_score = (
+            previous_report.order_by("created")
+            .last()
+            .reports.filter(strategy="mobile")
+            .aggregate(Avg("score"))["score__avg"]
+        )
+
+        previous_desktop_report_score = (
+            previous_report.order_by("created")
+            .last()
+            .reports.filter(strategy="desktop")
+            .aggregate(Avg("score"))["score__avg"]
+        )
+    else:
+        previous_mobile_report_score = "No previous"
+        previous_desktop_report_score = "No previous"
+
     return {
         "text": "Hello, a new Google PageSpeed report was generated for your app hosted at:\r\n\
 "
@@ -45,10 +51,18 @@ Mobile score average: "
         + str(desktop_report_score)
         + "%\r\n\
 Mobile score delta is "
-        + str(mobile_report_score - previous_mobile_report_score)
+        + (
+            str(mobile_report_score - previous_mobile_report_score)
+            if previous_report
+            else "(No previous report)"
+        )
         + "% by last report group\r\n\
 Desktop score delta is "
-        + str(desktop_report_score - previous_desktop_report_score)
+        + (
+            str(desktop_report_score - previous_desktop_report_score)
+            if previous_report
+            else "(No previous report)"
+        )
         + "% by last report group\r\n\
 For more info, check: "
         + settings.PSI_FULL_ADMIN_PATH
