@@ -2,7 +2,7 @@
 import mock
 from django.test import TestCase
 
-from djangopsi.services.retrievers import (
+from djangopsi.services.retrievers import (  # run_pagespeed_analysis,
     check_urls_in_pagespeed,
     treat_pagespeed_response,
 )
@@ -48,3 +48,9 @@ class RetrieversTestCase(TestCase):
 
         _run_pagespeed_analysis.assert_called()
         self.assertEqual(_run_pagespeed_analysis.call_count, 2)
+
+    def test_run_pagespeed_analysis(self):
+        pass
+        # analysis_result = run_pagespeed_analysis(
+        #     psi_service, url_to_check, strategy="desktop"
+        # )
