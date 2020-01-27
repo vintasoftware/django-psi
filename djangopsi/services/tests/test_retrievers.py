@@ -1,6 +1,11 @@
+# deps
+import mock
 from django.test import TestCase
 
-from djangopsi.services.retrievers import treat_pagespeed_response
+from djangopsi.services.retrievers import (
+    check_urls_in_pagespeed,
+    treat_pagespeed_response,
+)
 
 
 class RetrieversTestCase(TestCase):
@@ -26,3 +31,20 @@ class RetrieversTestCase(TestCase):
         actual_return_value = treat_pagespeed_response(mock_response, "test_strategy")
 
         self.assertDictEqual(actual_return_value, expected_return_value)
+
+    def test_get_all_project_urls_to_check(self):
+        pass
+
+    @mock.patch("djangopsi.services.retrievers.run_pagespeed_analysis")
+    def test_check_urls_in_pagespeed(self, _run_pagespeed_analysis):
+        test_strategy = "test_strategy"
+        test_base_url = "http://www.vinta.com.br"
+        test_psi_service = "test_service"
+        test_urls = [{"path": "1"}, {"path": "2"}]
+
+        check_urls_in_pagespeed(
+            test_psi_service, test_urls, test_base_url, test_strategy
+        )
+
+        _run_pagespeed_analysis.assert_called()
+        self.assertEqual(_run_pagespeed_analysis.call_count, 2)

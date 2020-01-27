@@ -15,13 +15,14 @@ google-auth-httplib2==0.0.3  # via google-api-python-client
 google-auth==1.11.0       # via google-api-python-client, google-auth-httplib2
 httplib2==0.17.0          # via google-api-python-client, google-auth-httplib2
 idna==2.8                 # via requests
+mock==3.0.5
 psycopg2==2.8.4
 pyasn1-modules==0.2.8     # via google-auth
 pyasn1==0.4.8             # via pyasn1-modules, rsa
 python-decouple==3.3
 requests==2.22.0          # via codecov
 rsa==4.0                  # via google-auth
-six==1.14.0               # via google-api-python-client, google-auth
+six==1.14.0               # via google-api-python-client, google-auth, mock
 uritemplate==3.0.1        # via google-api-python-client
 urllib3==1.25.8           # via requests
 
