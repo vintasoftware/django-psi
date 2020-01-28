@@ -4,6 +4,7 @@ from django.test import TestCase
 
 from djangopsi.services.retrievers import (  # run_pagespeed_analysis,
     check_urls_in_pagespeed,
+    get_all_project_urls_to_check,
     treat_pagespeed_response,
 )
 
@@ -36,7 +37,8 @@ class RetrieversTestCase(TestCase):
         self.assertDictEqual(actual_return_value, expected_return_value)
 
     def test_get_all_project_urls_to_check(self):
-        pass
+        with self.assertRaises(AttributeError):
+            get_all_project_urls_to_check(None, [], None)
 
     @mock.patch("djangopsi.services.retrievers.run_pagespeed_analysis")
     def test_check_urls_in_pagespeed(self, _run_pagespeed_analysis):
