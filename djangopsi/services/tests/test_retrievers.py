@@ -10,7 +10,10 @@ from djangopsi.services.retrievers import (  # run_pagespeed_analysis,
 
 class RetrieversTestCase(TestCase):
     def setUp(self):
-        pass
+        self.test_strategy = "test_strategy"
+        self.test_base_url = "http://www.vinta.com.br"
+        self.test_psi_service = "test_service"
+        self.test_urls = [{"path": "1"}, {"path": "2"}]
 
     def test_treat_pagespeed_response(self):
 
@@ -37,13 +40,11 @@ class RetrieversTestCase(TestCase):
 
     @mock.patch("djangopsi.services.retrievers.run_pagespeed_analysis")
     def test_check_urls_in_pagespeed(self, _run_pagespeed_analysis):
-        test_strategy = "test_strategy"
-        test_base_url = "http://www.vinta.com.br"
-        test_psi_service = "test_service"
-        test_urls = [{"path": "1"}, {"path": "2"}]
-
         check_urls_in_pagespeed(
-            test_psi_service, test_urls, test_base_url, test_strategy
+            self.test_psi_service,
+            self.test_urls,
+            self.test_base_url,
+            self.test_strategy,
         )
 
         _run_pagespeed_analysis.assert_called()
