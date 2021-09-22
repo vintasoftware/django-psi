@@ -4,22 +4,3 @@
 #
 #    pip-compile --output-file=requirements/doc.txt requirements/base.in requirements/doc.in
 #
-asgiref==3.2.3            # via django
-cachetools==4.0.0         # via google-auth
-django-model-utils==4.0.0
-django==3.0.2
-google-api-python-client==1.7.11
-google-auth-httplib2==0.0.3  # via google-api-python-client
-google-auth==1.11.0       # via google-api-python-client, google-auth-httplib2
-httplib2==0.17.0          # via google-api-python-client, google-auth-httplib2
-psycopg2==2.8.4
-pyasn1-modules==0.2.8     # via google-auth
-pyasn1==0.4.8             # via pyasn1-modules, rsa
-pytz==2019.3              # via django
-rsa==4.0                  # via google-auth
-six==1.14.0               # via google-api-python-client, google-auth
-sqlparse==0.3.0           # via django
-uritemplate==3.0.1        # via google-api-python-client
-
-# The following packages are considered to be unsafe in a requirements file:
-# setuptools
